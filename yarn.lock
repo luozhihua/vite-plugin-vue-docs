@@ -8648,7 +8648,7 @@ verror@1.10.0:
 
 vite-plugin-vue-docs@^0.1.8:
   version "0.1.9"
-  resolved "http://npm.bigesj.com:4873/vite-plugin-vue-docs/-/vite-plugin-vue-docs-0.1.9.tgz#065e2abc67fa6326febec500719c7ba009df568d"
+  resolved "http://106.13.27.181:4873/vite-plugin-vue-docs/-/vite-plugin-vue-docs-0.1.9.tgz#065e2abc67fa6326febec500719c7ba009df568d"
   integrity sha512-f9XtSWxbZT5sDOf3ntkGxLpfeelSZxFqXDXx5uEG32K6Zv9HKbZWWMZ1gMkfIFaRLDBWzQ3HkGPxDHZSLSJgfQ==
   dependencies:
     "@babel/traverse" "^7.14.7"

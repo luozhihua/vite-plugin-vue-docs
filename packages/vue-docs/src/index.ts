@@ -55,7 +55,10 @@ export default function vueDocs(rawOptions?: CustomConfig): Plugin {
     fileExp: RegExp(""),
     showUse: true,
     userProjectDir: userProjectDir,
-    cacheDir: path.join(userProjectDir, ".cache-vue-docs"),
+    cacheDir: path.join(
+      userProjectDir.replaceAll("\\", "/"),
+      ".cache-vue-docs"
+    ),
     header: {
       title: userPkg.name,
     },
