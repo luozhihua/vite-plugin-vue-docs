@@ -18,8 +18,10 @@ function createLayout(config: Config, route: DocsRoute): void {
   }
 
   const navs = route.toNavRouteData();
-  debug.cache("createLayout component %O", navs[1].data);
-  debug.cache("createLayout use %O", navs[0].data);
+  if (config.showUse) {
+    debug.cache("createLayout component %O", navs[1].data);
+    debug.cache("createLayout use %O", navs[0].data);
+  }
   // 不使用模板引擎，直接使用标志的方式替换掉
   const layout = fs
     .readFileSync(`${layoutDir}`, "utf-8")

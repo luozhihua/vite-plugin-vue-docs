@@ -11,9 +11,9 @@
 </template>
 
 <script>
-import CustomNav from "vite-plugin-vue-docs/dist/template/nav.vue";
-import CustomHeader from "vite-plugin-vue-docs/dist/template/header.vue";
-import "vite-plugin-vue-docs/dist/template/style.css";
+import CustomNav from "@bige/vite-plugin-vue-docs/dist/template/nav.vue";
+import CustomHeader from "@bige/vite-plugin-vue-docs/dist/template/header.vue";
+import "@bige/vite-plugin-vue-docs/dist/template/style.css";
 
 export default {
   components: { CustomHeader, CustomNav },
