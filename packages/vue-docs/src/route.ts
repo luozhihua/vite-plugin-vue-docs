@@ -127,6 +127,9 @@ class DocsRoute {
     }
 
     this.route[routePath] = route;
+    console.log(this.route);
+
+    debugger;
     return this.route;
   }
 
@@ -162,7 +165,7 @@ class DocsRoute {
     for (const key in this.route) {
       const route = this.route[key];
       const json = {
-        path: route.path,
+        path: route.path.replace(/^[\/\\]/, ""),
         name: route.name,
         component: route.component,
         props: {
@@ -194,7 +197,7 @@ class DocsRoute {
     console.log("this.config.cacheDir: ", this.config.cacheDir);
     console.log("routes: ", this.route);
     const layout = `[{
-      path: '/docs',
+      path: '${this.config.base || "/docs"}',
       component: () => import('${this.config.cacheDir.replaceAll(
         "\\",
         "/"
