@@ -8844,6 +8844,21 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
+vite-plugin-vue-docs@^0.1.8:
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/vite-plugin-vue-docs/-/vite-plugin-vue-docs-0.1.8.tgz#d7fc784b77e7a35d2c70e538d3126fd2eefc4444"
+  integrity sha512-bi1WNa6QzXTb/8VFV2Jgv/UqevDmedw+mmMwg3tOZEfgMhI+/481bzlMgQ2NYEQ+0E8KIgsalRRCU0snHK3+Yg==
+  dependencies:
+    "@babel/traverse" "^7.14.7"
+    "@babel/types" "^7.14.5"
+    "@vue/compiler-sfc" "^3.1.2"
+    cheerio "^1.0.0-rc.10"
+    comment-parser "^1.1.5"
+    fast-glob "^3.2.7"
+    humps "^2.0.1"
+    vue-router "4"
+    vue3-highlightjs "^1.0.5"
+
 vite@^2.3.8:
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/vite/-/vite-2.3.8.tgz#42e3e03953859fd410e4e6ab3d1cca0aab2adc3c"
