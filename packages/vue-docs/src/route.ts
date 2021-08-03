@@ -127,7 +127,6 @@ class DocsRoute {
     }
 
     this.route[routePath] = route;
-    console.log(this.route);
 
     debugger;
     return this.route;
@@ -194,8 +193,6 @@ class DocsRoute {
       `{path: "",name: "HelloWorld",component: () => import('${this.config.templateDir}/HelloWorld.vue')}`
     );
 
-    console.log("this.config.cacheDir: ", this.config.cacheDir);
-    console.log("routes: ", this.route);
     const layout = `[{
       path: '${this.config.base || "/docs"}',
       component: () => import('${this.config.cacheDir.replaceAll(
