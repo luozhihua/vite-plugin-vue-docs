@@ -19,6 +19,8 @@ export interface CustomConfig {
   showUse?: boolean;
   // header
   header?: ConfigHeader;
+  // 组件绝对路径
+  entries?: string[];
 }
 
 interface ConfigHeader {
@@ -50,6 +52,7 @@ export default function vueDocs(rawOptions?: CustomConfig): Plugin {
   const config: Config = {
     base: "/docs",
     componentDir: "/components",
+    entries: ["main.ts", "main.js"],
     root: "",
     vueRoute: "router",
     fileExp: RegExp(""),
@@ -65,7 +68,10 @@ export default function vueDocs(rawOptions?: CustomConfig): Plugin {
     ...rawOptions,
   };
 
-  config.root = `${process.cwd()}/src${config.componentDir}`;
+  // replaceAll('\\','/') to fix windows root path
+  config.root = `${process.cwd().replaceAll("\\", "/")}/src${
+    config.componentDir
+  }`;
   config.fileExp = RegExp(`${config.componentDir}\\/.*?.vue$`);
   config.templateDir = `${pkg.name}/dist/template`;
 
@@ -90,7 +96,11 @@ export default function vueDocs(rawOptions?: CustomConfig): Plugin {
 
     async load(id) {
       if (id !== MODULE_NAME_VIRTUAL) return null;
-      const files = await fg([".editorconfig", `${config.root}/**/*.vue`]);
+      const files = await fg([
+        ".editorconfig",
+        `${config.root.replaceAll("\\", "/")}/**/*.vue`,
+      ]);
+
       files.map((item) => {
         if (!item.includes("demo")) {
           Route.add(item);
@@ -101,7 +111,10 @@ export default function vueDocs(rawOptions?: CustomConfig): Plugin {
     },
 
     transform(code, id) {
-      if (id.includes("main.ts") || id.includes("main.js")) {
+      if (
+        config.entries &&
+        config.entries.some((entries) => id.includes(entries))
+      ) {
         code += `import VueHighlightJS from 'vue3-highlightjs';`;
         code += `app.use(VueHighlightJS);`;
         return code;

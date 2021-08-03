@@ -116,7 +116,7 @@ class DocsRoute {
 
     const cacheDir = Cache.childFile(this.config, route);
 
-    route.component = `() => import('${cacheDir}')`;
+    route.component = `() => import('${cacheDir.replaceAll("\\", "/")}')`;
 
     if (fs.existsSync(demoFile)) {
       route.demo = {
@@ -162,7 +162,7 @@ class DocsRoute {
     for (const key in this.route) {
       const route = this.route[key];
       const json = {
-        path: route.path.replace(/\//, ""),
+        path: route.path,
         name: route.name,
         component: route.component,
         props: {
@@ -191,9 +191,14 @@ class DocsRoute {
       `{path: "",name: "HelloWorld",component: () => import('${this.config.templateDir}/HelloWorld.vue')}`
     );
 
+    console.log("this.config.cacheDir: ", this.config.cacheDir);
+    console.log("routes: ", this.route);
     const layout = `[{
       path: '/docs',
-      component: () => import('${this.config.cacheDir}/layout.vue'),
+      component: () => import('${this.config.cacheDir.replaceAll(
+        "\\",
+        "/"
+      )}/layout.vue'),
       children: [${arr.join(",\n").replace(/\s+/g, "")}]
     }]`;
 
@@ -202,7 +207,9 @@ class DocsRoute {
     debug.route("demo imports %O", demoImports);
     debug.route("demo component %O", demoComponent);
 
-    let code = `export const routes = ${layout.replace(/\s+|\n+/g, "")};\n`;
+    let code = `export const routes = ${layout
+      .replace(/\s+|\n+/g, "")
+      .replace(/\\/g, "/")};\n`;
     code += `${
       demoImports.length <= 1
         ? demoImports.join(";") + ";\n"
