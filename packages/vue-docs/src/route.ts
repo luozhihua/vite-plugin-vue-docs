@@ -13,6 +13,8 @@ export interface Route {
   component: string;
   data?: RenderData | null;
   demo?: Demo | null;
+  meta: { [k: string]: any };
+  beforeEnter?: (to: Route, from: Route) => Promise<any>;
 }
 
 export interface Demo {
@@ -107,6 +109,7 @@ class DocsRoute {
       file,
       component: "",
       data: result?.content,
+      meta: {},
     };
 
     if (fs.existsSync(demoFile)) {
@@ -115,10 +118,17 @@ class DocsRoute {
     }
 
     const cacheDir = Cache.childFile(this.config, route);
+    route.meta.componentPath = cacheDir.replaceAll("\\", "/");
 
     route.component = `() => import('${cacheDir.replaceAll("\\", "/")}')`;
 
     if (fs.existsSync(demoFile)) {
+      route.meta.demo = {
+        file: demoFile,
+        name: toPascalCase(routeName + "-demo"),
+        code: fs.readFileSync(demoFile, "utf-8"),
+      };
+
       route.demo = {
         file: demoFile,
         name: toPascalCase(routeName + "-demo"),
@@ -156,8 +166,61 @@ class DocsRoute {
 
     return arr;
   }
-
   toClientCode(): string {
+    const docs = [
+      `{path: "changelog",name: "ChangeLog",component: () => import('${this.config.templateDir}/ChangeLog.vue')}`,
+      `{path: "",name: "HelloWorld",component: () => import('${this.config.templateDir}/HelloWorld.vue')}`,
+    ];
+
+    for (const key in this.route) {
+      const route = this.route[key];
+      docs.push(`
+        {
+          path: "${route.path.replace(/^[\/\\]/, "")}",
+          name: "${route.name}",
+          component: () => import("${route.meta.componentPath}"),
+          props: {
+            content: ${JSON.stringify(route.data, null, 2)},
+          },
+          meta: ${JSON.stringify(route.meta, null, 2)},
+          async beforeEnter(to,from) {
+            debugger;
+            const demoMeta = to.meta.demo;
+            if (demoMeta && !to.meta.demoRegisted) {
+              const demoComp = await import(demoMeta.file);
+              const demo = demoComp.default || demoComp;
+              Vue.component(demoMeta.name, demo);
+              to.meta.demoRegisted = true;
+            }
+          }
+        }
+      `);
+    }
+
+    const layout = `[{
+      path: '${this.config.base || "/docs"}',
+      component: () => import('${this.config.cacheDir.replaceAll(
+        "\\",
+        "/"
+      )}/layout.vue'),
+      children: [
+        ${docs.join(",\n").replace(/\s+/g, " ")}
+      ]
+    }]`
+      .replace(/\s+/g, " ")
+      .replace(/\n+/g, "\n");
+
+    const code = `
+      let Vue = null;
+      export function initVueDocsDemo(_vue) { Vue = _vue; };
+      export const routes = ${layout};
+      export default routes;
+      `;
+
+    return code;
+  }
+
+  xtoClientCode(): string {
     const arr = [];
     const demoImports = [];
     const demoComponent = [];
@@ -167,6 +230,8 @@ class DocsRoute {
         path: route.path.replace(/^[\/\\]/, ""),
         name: route.name,
         component: route.component,
+        // meta: route.meta,
+        // beforeEnter: route.beforeEnter,
         props: {
           content: route.data,
         },
