@@ -19,8 +19,8 @@ function createLayout(config: Config, route: DocsRoute): void {
 
   const navs = route.toNavRouteData();
   if (config.showUse) {
-    debug.cache("createLayout component %O", navs[1].data);
-    debug.cache("createLayout use %O", navs[0].data);
+    // debug.cache("createLayout component %O", navs[1].data);
+    // debug.cache("createLayout use %O", navs[0].data);
   }
   // 不使用模板引擎，直接使用标志的方式替换掉
   const layout = fs
@@ -45,7 +45,7 @@ function clean(config: Config): void {
 
 function childFile(config: Config, route: Route): string {
   const cacheDir = path.join(config.cacheDir, route.name + ".vue");
-  debug.cache("childFile %s", cacheDir);
+  // debug.cache("childFile %s", cacheDir);
 
   const tmpContent = fs.readFileSync(
     path.join(__dirname, "./template/content.vue"),

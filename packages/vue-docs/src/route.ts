@@ -114,7 +114,7 @@ class DocsRoute {
 
     if (fs.existsSync(demoFile)) {
       route.meta.demo = this.getRouteDemo(route, demoFile);
-      debug.route("add demo %O", route.meta.demo);
+      // debug.route("add demo %O", route.meta.demo);
     }
 
     const cacheDir = Cache.childFile(this.config, route);
@@ -144,7 +144,7 @@ class DocsRoute {
       route.meta.demo = this.getRouteDemo(route, file);
     } else {
       const result = vueToJsonData(fs.readFileSync(file, "utf-8"));
-      debug.route("change %O", this.route[routePath]);
+      // debug.route("change %O", this.route[routePath]);
       this.route[routePath].data = result?.content;
     }
 
@@ -160,7 +160,7 @@ class DocsRoute {
     return arr;
   }
 
-  toClientCode(): string {
+  xtoClientCode(): string {
     const docs = [
       `{path: "changelog",name: "ChangeLog",component: () => import('${this.config.templateDir}/ChangeLog.vue')}`,
       `{path: "",name: "HelloWorld",component: () => import('${this.config.templateDir}/HelloWorld.vue')}`,
@@ -203,11 +203,12 @@ class DocsRoute {
       const loaded = {};
       const onBeforeEnter = async function(to, from) {
         const demoMeta = to.meta.demo;
-        if (demoMeta && loaded[demoMeta.name]!==true) {
+        if (demoMeta) {
+          /* @vite-ignore */
           const demoComp = await import(demoMeta.file);
           const demo = demoComp.default || demoComp;
           Vue.component(demoMeta.name, demo);
-          loaded[demoMeta.name] = true;
+          // loaded[demoMeta.name] = true;
         }
       }
       export function initVueDocsDemo(_vue) { Vue = _vue; };
@@ -218,7 +219,7 @@ class DocsRoute {
     return code;
   }
 
-  xtoClientCode(): string {
+  toClientCode(): string {
     const arr = [];
     const demoImports = [];
     const demoComponent = [];
@@ -235,9 +236,10 @@ class DocsRoute {
         },
       };
 
-      if (route.demo) {
-        const demoName = route.demo.name;
-        demoImports.push(`import ${demoName} from "${route.demo.file}"`);
+      const demo = route.meta.demo;
+      if (demo) {
+        const demoName = demo.name;
+        demoImports.push(`import ${demoName} from "${demo.file}"`);
         demoComponent.push(`Vue.component('${demoName}', ${demoName})`);
       }
 
@@ -262,11 +264,10 @@ class DocsRoute {
       children: [${arr.join(",\n").replace(/\s+/g, "")}]
     }]`;
 
-    console.log(222222);
     Cache.createLayout(this.config, this);
 
-    debug.route("demo imports %O", demoImports);
-    debug.route("demo component %O", demoComponent);
+    // debug.route("demo imports %O", demoImports);
+    // debug.route("demo component %O", demoComponent);
 
     let code = `export const routes = ${layout
       .replace(/\s+|\n+/g, "")

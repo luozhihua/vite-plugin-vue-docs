@@ -33,21 +33,21 @@ export function hmr(
 
   watcher.on("change", (file) => {
     if (file.includes(config.root)) {
-      debug.hmr("change %s", file);
+      // debug.hmr("change %s", file);
       route.change(file);
     }
   });
 
   watcher.on("add", (file) => {
     if (file.includes(config.root)) {
-      debug.hmr("add %s", file);
+      // debug.hmr("add %s", file);
       fullReload();
     }
   });
 
   watcher.on("unlink", (file) => {
     if (file.includes(config.root)) {
-      debug.hmr("unlink %s", file);
+      // debug.hmr("unlink %s", file);
       fullReload();
     }
   });

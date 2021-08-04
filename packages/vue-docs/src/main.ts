@@ -17,7 +17,6 @@ export function vueToJsonData(
   code: string
 ): { content: RenderData; component: Component } | null {
   const { descriptor, errors } = parse(code);
-  console.log("descriptor ===> ", descriptor);
   const componentData: Component = {
     name: "",
   };
