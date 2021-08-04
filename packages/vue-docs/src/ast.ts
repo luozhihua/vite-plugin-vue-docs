@@ -109,11 +109,7 @@ export function getAstValue(ast: Node | null): string {
     return ast.name;
   }
 
-  if (t.isStringLiteral(ast)) {
-    return ast.value;
-  }
-
-  return "";
+  return ast.value;
 }
 
 interface SlotAst {
@@ -186,11 +182,6 @@ export function handleProp(variables: Node): Prop {
         const name = getAstValue(obj.key);
         let value = "";
 
-        // type: string
-        if (t.isIdentifier(obj.value) || t.isStringLiteral(obj.value)) {
-          value = getAstValue(obj.value);
-        }
-
         // type: [string, number]
         if (t.isArrayExpression(obj.value)) {
           value = obj.value.elements
@@ -198,6 +189,8 @@ export function handleProp(variables: Node): Prop {
             .filter((str) => str)
             .join(" | ")
             .toLocaleLowerCase();
+        } else {
+          value = getAstValue(obj.value);
         }
 
         switch (name) {
@@ -206,7 +199,7 @@ export function handleProp(variables: Node): Prop {
             break;
 
           case "required":
-            param.required = !value;
+            param.required = !!value;
             break;
 
           case "default":

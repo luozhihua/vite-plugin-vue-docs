@@ -11,6 +11,7 @@ import {
 } from "./ast";
 import { toLine } from "./utils";
 import { Component, Emit, Method, Prop, RenderData } from "./type";
+import { CallExpression } from "@babel/types";
 
 // 返回code信息
 export function vueToJsonData(
@@ -28,6 +29,16 @@ export function vueToJsonData(
 
   if (descriptor.script) {
     const { name, emits, methods, props } = handleScript(descriptor.script);
+    componentData.name = name;
+    componentData.emits = emits;
+    componentData.methods = methods;
+    componentData.props = props;
+  }
+
+  if (descriptor.scriptSetup) {
+    const { name, emits, methods, props } = handleScriptSetup(
+      descriptor.scriptSetup
+    );
     componentData.name = name;
     componentData.emits = emits;
     componentData.methods = methods;
@@ -141,6 +152,52 @@ function handleExportDefault(ast: ObjectExpression): Component {
   };
 }
 
+export function handleScriptSetup(script: SFCScriptBlock): Component {
+  const ast = babelParse(script.content, {
+    sourceType: "module",
+    plugins: script.lang === "ts" ? ["typescript"] : [],
+  });
+  // console.log(
+  //   "\n\nScript Setup AST ================>\n",
+  //   JSON.stringify(ast, null, 4)
+  // );
+
+  const component: Component = {
+    name: "",
+    props: [],
+    emits: [],
+    methods: [],
+  };
+
+  traverse(ast, {
+    enter(path: NodePath) {
+      // export default defineComponent({})
+      if (path.isCallExpression()) {
+        handleScriptSetupCode(component, path.node);
+      }
+    },
+  });
+
+  return component;
+}
+
+function handleScriptSetupCode(
+  component: Component,
+  ast: CallExpression
+): Component {
+  // Emit
+  if ((ast.callee as any).name === "defineEmits") {
+    component.emits = getEmitsByArray(ast.arguments[0] as ArrayExpression);
+  }
+
+  // Props
+  if ((ast.callee as any).name === "defineProps") {
+    component.props = getPropsByObject(ast.arguments[0] as ObjectExpression);
+  }
+
+  return component;
+}
+
 // 将component 转换为 模板可用数据
 // 如果是 undefined null "" 的转换，都在此方法中
 function componentToLayoutData(component: Component): RenderData {
@@ -176,7 +233,7 @@ function componentToLayoutData(component: Component): RenderData {
             item.notes || "-",
             item.type as string,
             item.default || "-",
-            item.required ? "true" : "false",
+            item.required === true ? "true" : "false",
           ];
         }),
       },

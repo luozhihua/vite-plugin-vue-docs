@@ -24,7 +24,9 @@
                 <!-- 类型 -->
                 <em v-if="type === 'props' && k === 2">{{ v }}</em>
                 <!-- 必填 -->
-                <code v-else-if="type === 'props' && k === 4">{{ v }}</code>
+                <code v-else-if="type === 'props' && k === 4">{{
+                  v === "true" ? "✅" : v === "false" ? "" : v
+                }}</code>
                 <span v-else>{{ v }}</span>
               </td>
             </tr>
