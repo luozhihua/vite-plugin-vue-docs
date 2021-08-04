@@ -113,8 +113,8 @@ class DocsRoute {
     };
 
     if (fs.existsSync(demoFile)) {
-      route.demo = this.getRouteDemo(route, demoFile);
-      debug.route("add demo %O", route.demo);
+      route.meta.demo = this.getRouteDemo(route, demoFile);
+      debug.route("add demo %O", route.meta.demo);
     }
 
     const cacheDir = Cache.childFile(this.config, route);
@@ -128,17 +128,10 @@ class DocsRoute {
         name: toPascalCase(routeName + "-demo"),
         code: fs.readFileSync(demoFile, "utf-8"),
       };
-
-      route.demo = {
-        file: demoFile,
-        name: toPascalCase(routeName + "-demo"),
-        code: fs.readFileSync(demoFile, "utf-8"),
-      };
     }
 
     this.route[routePath] = route;
 
-    debugger;
     return this.route;
   }
 
@@ -148,7 +141,7 @@ class DocsRoute {
     const route = this.route[routePath];
 
     if (file.includes(".demo.vue")) {
-      route.demo = this.getRouteDemo(route, file);
+      route.meta.demo = this.getRouteDemo(route, file);
     } else {
       const result = vueToJsonData(fs.readFileSync(file, "utf-8"));
       debug.route("change %O", this.route[routePath]);
@@ -166,6 +159,7 @@ class DocsRoute {
 
     return arr;
   }
+
   toClientCode(): string {
     const docs = [
       `{path: "changelog",name: "ChangeLog",component: () => import('${this.config.templateDir}/ChangeLog.vue')}`,
@@ -183,28 +177,20 @@ class DocsRoute {
             content: ${JSON.stringify(route.data, null, 2)},
           },
           meta: ${JSON.stringify(route.meta, null, 2)},
-          async beforeEnter(to,from) {
-            debugger;
-            const demoMeta = to.meta.demo;
-            if (demoMeta && !to.meta.demoRegisted) {
-              const demoComp = await import(demoMeta.file);
-              const demo = demoComp.default || demoComp;
-              Vue.component(demoMeta.name, demo);
-              to.meta.demoRegisted = true;
-            }
-          }
+          beforeEnter: onBeforeEnter
         }
       `);
     }
 
     const layout = `[{
       path: '${this.config.base || "/docs"}',
+      /* @vite-ignore */
       component: () => import('${this.config.cacheDir.replaceAll(
         "\\",
         "/"
-      )}/layout.vue'),
+      )}/@vue-doc_layout.vue'),
       children: [
-        ${docs.join(",\n").replace(/\s+/g, " ")}
+        ${docs.join(",\r\n").replace(/\s+/g, " ")}
       ]
     }]`
       .replace(/\s+/g, " ")
@@ -212,6 +198,16 @@ class DocsRoute {
 
     const code = `
       let Vue = null;
+      const loaded = {};
+      const onBeforeEnter = async function(to, from) {
+        const demoMeta = to.meta.demo;
+        if (demoMeta && loaded[demoMeta.name]!==true) {
+          const demoComp = await import(demoMeta.file);
+          const demo = demoComp.default || demoComp;
+          Vue.component(demoMeta.name, demo);
+          loaded[demoMeta.name] = true;
+        }
+      }
       export function initVueDocsDemo(_vue) { Vue = _vue; };
       export const routes = ${layout};
       export default routes;
@@ -263,7 +259,7 @@ class DocsRoute {
       component: () => import('${this.config.cacheDir.replaceAll(
         "\\",
         "/"
-      )}/layout.vue'),
+      )}/@vue-doc_layout.vue'),
       children: [${arr.join(",\n").replace(/\s+/g, "")}]
     }]`;
 

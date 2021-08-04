@@ -62,8 +62,8 @@ function childFile(config: Config, route: Route): string {
     `result: ${JSON.stringify(route.data)}`
   );
 
-  if (route.demo) {
-    const demo = route.demo;
+  if (route.meta.demo) {
+    const demo = route.meta.demo;
     const demoCode = demo.code
       ?.replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
