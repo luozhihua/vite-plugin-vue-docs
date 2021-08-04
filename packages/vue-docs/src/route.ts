@@ -118,9 +118,9 @@ class DocsRoute {
     }
 
     const cacheDir = Cache.childFile(this.config, route);
-    route.meta.componentPath = cacheDir.replaceAll("\\", "/");
+    route.meta.componentPath = cacheDir.replace(/\\/g, "/");
 
-    route.component = `() => import('${cacheDir.replaceAll("\\", "/")}')`;
+    route.component = `() => import('${cacheDir.replace(/\\/g, "/")}')`;
 
     if (fs.existsSync(demoFile)) {
       route.meta.demo = {
@@ -185,16 +185,18 @@ class DocsRoute {
     const layout = `[{
       path: '${this.config.base || "/docs"}',
       /* @vite-ignore */
-      component: () => import('${this.config.cacheDir.replaceAll(
-        "\\",
+      component: () => import('${this.config.cacheDir.replace(
+        /\\/g,
         "/"
-      )}/@vue-doc_layout.vue'),
+      )}/vue-doc-layout.vue'),
       children: [
         ${docs.join(",\r\n").replace(/\s+/g, " ")}
       ]
     }]`
       .replace(/\s+/g, " ")
       .replace(/\n+/g, "\n");
+
+    Cache.createLayout(this.config, this);
 
     const code = `
       let Vue = null;
@@ -256,13 +258,11 @@ class DocsRoute {
 
     const layout = `[{
       path: '${this.config.base || "/docs"}',
-      component: () => import('${this.config.cacheDir.replaceAll(
-        "\\",
-        "/"
-      )}/@vue-doc_layout.vue'),
+      component: () => import('${this.config.cacheDir}/vue-doc-layout.vue'),
       children: [${arr.join(",\n").replace(/\s+/g, "")}]
     }]`;
 
+    console.log(222222);
     Cache.createLayout(this.config, this);
 
     debug.route("demo imports %O", demoImports);

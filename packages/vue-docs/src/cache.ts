@@ -10,7 +10,7 @@ function createDir(config: Config): void {
 
 function createLayout(config: Config, route: DocsRoute): void {
   const layoutDir = path.join(__dirname, "./template/layout.vue");
-  const oldDir = config.cacheDir + "/layout.vue";
+  const oldDir = config.cacheDir + "/vue-doc-layout.vue";
 
   let oldData = "";
   if (fs.existsSync(oldDir)) {

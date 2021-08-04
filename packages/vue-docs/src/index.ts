@@ -58,18 +58,15 @@ export default function vueDocs(rawOptions?: CustomConfig): Plugin {
     fileExp: RegExp(""),
     showUse: true,
     userProjectDir: userProjectDir,
-    cacheDir: path.join(
-      userProjectDir.replaceAll("\\", "/"),
-      ".cache-vue-docs"
-    ),
+    cacheDir: path.join(userProjectDir.replace(/\\/g, "/"), ".cache-vue-docs"),
     header: {
       title: userPkg.name,
     },
     ...rawOptions,
   };
 
-  // replaceAll('\\','/') to fix windows root path
-  config.root = `${process.cwd().replaceAll("\\", "/")}/src${
+  // replace('\\','/') to fix windows root path
+  config.root = `${process.cwd().replace(/\\/g, "/")}/src${
     config.componentDir
   }`;
   config.fileExp = RegExp(`${config.componentDir}\\/.*?.vue$`);
@@ -98,7 +95,7 @@ export default function vueDocs(rawOptions?: CustomConfig): Plugin {
       if (id !== MODULE_NAME_VIRTUAL) return null;
       const files = await fg([
         ".editorconfig",
-        `${config.root.replaceAll("\\", "/")}/**/*.vue`,
+        `${config.root.replace(/\\/g, "/")}/**/*.vue`,
       ]);
 
       files.map((item) => {
