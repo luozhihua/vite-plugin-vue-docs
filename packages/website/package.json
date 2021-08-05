@@ -1,6 +1,7 @@
 {
   "name": "@vue-docs/website",
   "version": "0.3.7",
+  "private": true,
   "scripts": {
     "serve": "vite preview"
   },
