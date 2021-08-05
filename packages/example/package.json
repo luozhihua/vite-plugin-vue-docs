@@ -1,6 +1,6 @@
 {
   "name": "@vue-docs/example",
-  "version": "0.1.8",
+  "version": "0.3.7",
   "scripts": {
     "dev": "nodemon --watch ../vue-docs/dist -e vue,js --exec 'cross-env DEBUG=vue-docs:* vite'",
     "dev2": "nodemon --watch ../vue-docs/dist -e vue,js --exec vite",
@@ -9,10 +9,10 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@bige/vite-plugin-vue-docs": "^0.3.7",
     "vue": "^3.0.5",
     "vue-codemirror": "^4.0.6",
-    "vue-router": "^4.0.10",
-    "@bige/vite-plugin-vue-docs": ">=0.3.6"
+    "vue-router": "^4.0.10"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.2.3",
