@@ -1,6 +1,6 @@
 {
   "name": "@vue-docs/example",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "private": true,
   "scripts": {
     "dev": "nodemon --watch ../vue-docs/dist -e vue,js --exec 'cross-env DEBUG=vue-docs:* vite'",
