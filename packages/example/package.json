@@ -11,7 +11,8 @@
   "dependencies": {
     "vue": "^3.0.5",
     "vue-codemirror": "^4.0.6",
-    "vue-router": "^4.0.10"
+    "vue-router": "^4.0.10",
+    "@bige/vite-plugin-vue-docs": ">=0.3.6"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.2.3",
@@ -19,8 +20,7 @@
     "cross-env": "^7.0.3",
     "nodemon": "^2.0.7",
     "typescript": "^4.3.2",
-    "vite": "^2.3.8",
-    "@bige/vite-plugin-vue-docs": "^0.1.8"
+    "vite": "^2.3.8"
   },
   "publishConfig": {
     "access": "public"

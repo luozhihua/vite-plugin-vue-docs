@@ -6,6 +6,7 @@ import { MODULE_NAME, MODULE_NAME_VIRTUAL } from "./constants";
 import path from "path";
 import { hmr } from "./hmr";
 import Cache from "./cache";
+import { emitter } from "./event-bus";
 
 // 可自定义的配置
 export interface CustomConfig {
@@ -133,4 +134,4 @@ export default function vueDocs(rawOptions?: CustomConfig): Plugin {
   };
 }
 
-export { vueToJsonData };
+export { vueToJsonData, emitter };

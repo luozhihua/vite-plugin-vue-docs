@@ -160,7 +160,7 @@ class DocsRoute {
     return arr;
   }
 
-  xtoClientCode(): string {
+  toClientCode(): string {
     const docs = [
       `{path: "changelog",name: "ChangeLog",component: () => import('${this.config.templateDir}/ChangeLog.vue')}`,
       `{path: "",name: "HelloWorld",component: () => import('${this.config.templateDir}/HelloWorld.vue')}`,
@@ -199,14 +199,16 @@ class DocsRoute {
     Cache.createLayout(this.config, this);
 
     const code = `
+      // import {emitter} from '@bige/vite-plugin-vue-docs/dist';
       let Vue = null;
       const loaded = {};
       const onBeforeEnter = async function(to, from) {
         const demoMeta = to.meta.demo;
         if (demoMeta) {
-          /* @vite-ignore */
-          const demoComp = await import(demoMeta.file);
+          // emitter.emit('beforeDemoLoad', to.meta.demo);
+          const demoComp = await import(/* @vite-ignore */demoMeta.file);
           const demo = demoComp.default || demoComp;
+          // emitter.emit('afterDemoLoad', demo);
           Vue.component(demoMeta.name, demo);
           // loaded[demoMeta.name] = true;
         }
@@ -219,7 +221,7 @@ class DocsRoute {
     return code;
   }
 
-  toClientCode(): string {
+  xtoClientCode(): string {
     const arr = [];
     const demoImports = [];
     const demoComponent = [];

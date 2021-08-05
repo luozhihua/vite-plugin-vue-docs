@@ -4,6 +4,7 @@
     <custom-nav :navs="navs"></custom-nav>
     <div class="van-doc-container van-doc-row">
       <div class="van-doc-content van-doc-content--common">
+        <div class="loading" v-if="loading">loading</div>
         <router-view></router-view>
       </div>
     </div>
@@ -19,9 +20,14 @@ export default {
   components: { CustomHeader, CustomNav },
   data() {
     return {
+      loading: false,
       // @vite-plugin-vue-docs layout nav
       // @vite-plugin-vue-docs layout header
     };
+  },
+
+  mounted() {
+    // ...
   },
 };
 </script>

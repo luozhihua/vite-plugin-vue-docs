@@ -109,7 +109,15 @@ export function getAstValue(ast: Node | null): string {
     return ast.name;
   }
 
-  return ast.value;
+  if (
+    t.isStringLiteral(ast) ||
+    t.isBooleanLiteral(ast) ||
+    t.isNumericLiteral(ast)
+  ) {
+    return ast.value;
+  }
+
+  return ast?.value;
 }
 
 interface SlotAst {
