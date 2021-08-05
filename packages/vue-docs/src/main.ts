@@ -178,7 +178,6 @@ export function handleScriptSetup(script: SFCScriptBlock): Component {
       }
     },
   });
-
   return component;
 }
 

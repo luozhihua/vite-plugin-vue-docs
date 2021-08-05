@@ -160,7 +160,7 @@ class DocsRoute {
     return arr;
   }
 
-  toClientCode(): string {
+  xxtoClientCode(): string {
     const docs = [
       `{path: "changelog",name: "ChangeLog",component: () => import('${this.config.templateDir}/ChangeLog.vue')}`,
       `{path: "",name: "HelloWorld",component: () => import('${this.config.templateDir}/HelloWorld.vue')}`,
@@ -221,7 +221,7 @@ class DocsRoute {
     return code;
   }
 
-  xtoClientCode(): string {
+  toClientCode(): string {
     const arr = [];
     const demoImports = [];
     const demoComponent = [];
