@@ -35,7 +35,6 @@ export function vueToJsonData(
     componentData.props = props;
   }
 
-  // console.log('\n\n====================================================================>\n\n',JSON.stringify(descriptor,null,4))
   if (descriptor.scriptSetup) {
     const { name, emits, methods, props } = handleScriptSetup(
       descriptor.scriptSetup
@@ -158,10 +157,6 @@ export function handleScriptSetup(script: SFCScriptBlock): Component {
     sourceType: "module",
     plugins: script.lang === "ts" ? ["typescript"] : [],
   });
-  // console.log(
-  //   "\n\nScript Setup AST ================>\n",
-  //   JSON.stringify(ast, null, 4)
-  // );
 
   const component: Component = {
     name: "",

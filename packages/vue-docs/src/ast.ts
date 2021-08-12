@@ -1,5 +1,6 @@
 import { Node } from "@babel/traverse";
 import * as t from "@babel/types";
+import generator from "@babel/generator";
 import {
   ArrayExpression,
   ObjectExpression,
@@ -114,10 +115,10 @@ export function getAstValue(ast: Node | null): string {
     t.isBooleanLiteral(ast) ||
     t.isNumericLiteral(ast)
   ) {
-    return ast.value;
+    return ast.value + "";
   }
 
-  return ast?.value;
+  return (ast as any)?.value;
 }
 
 interface SlotAst {
@@ -197,17 +198,27 @@ export function handleProp(variables: Node): Prop {
             .filter((str) => str)
             .join(" | ")
             .toLocaleLowerCase();
+        } else if (t.isTSAsExpression(obj.value)) {
+          /**
+           * type: PropType<"apple" | "orange" | "banana">
+           * output => 'apple' | 'orange' | 'banana'
+           */
+          const { code } = generator(obj.value?.typeAnnotation?.typeParameters);
+          value = code.replace(/[\<\>]/g, "").replace(/\"/g, "'");
         } else {
           value = getAstValue(obj.value);
         }
 
         switch (name) {
           case "type":
-            param.type = value.toLocaleLowerCase();
+            param.type = t.isTSAsExpression(obj.value)
+              ? value
+              : value.toLocaleLowerCase();
             break;
 
           case "required":
-            param.required = !!value;
+            param.required =
+              typeof value === "string" ? value === "true" : !!value;
             break;
 
           case "default":

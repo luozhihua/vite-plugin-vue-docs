@@ -10,7 +10,12 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 5000,
   },
-  plugins: [vue(), vueDocs()],
+  plugins: [
+    vue(),
+    vueDocs({
+      excludes: ["**/VueSetup.vue", "**/_*.vue"],
+    }),
+  ],
   resolve: {
     alias: {
       vue: "vue/dist/vue.esm-bundler.js",

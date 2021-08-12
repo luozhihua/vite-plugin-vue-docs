@@ -11,17 +11,19 @@ import { emitter } from "./event-bus";
 // 可自定义的配置
 export interface CustomConfig {
   // 文档路由地址
-  base: string;
+  base?: string;
   // 组件路径 相对于 src
-  componentDir: string;
+  componentDir?: string;
   // router实例名称
   vueRoute?: string;
   // 显示使用指南
   showUse?: boolean;
   // header
   header?: ConfigHeader;
-  // 组件绝对路径
+  // 指定组件库的入口文件
   entries?: string[];
+  // 排除组件, 支持 Glob
+  excludes?: string[];
 }
 
 interface ConfigHeader {
@@ -94,10 +96,12 @@ export default function vueDocs(rawOptions?: CustomConfig): Plugin {
 
     async load(id) {
       if (id !== MODULE_NAME_VIRTUAL) return null;
-      const files = await fg([
+
+      const globs = [
         ".editorconfig",
         `${config.root.replace(/\\/g, "/")}/**/*.vue`,
-      ]);
+      ];
+      const files = await fg(globs, { ignore: config.excludes });
 
       files.map((item) => {
         if (!item.includes("demo")) {
