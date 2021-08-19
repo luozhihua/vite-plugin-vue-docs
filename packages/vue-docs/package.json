@@ -1,6 +1,6 @@
 {
   "name": "@bige/vite-plugin-vue-docs",
-  "version": "0.3.13",
+  "version": "0.3.14",
   "description": "vite plugin auto document generation for vue",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
