@@ -117,8 +117,8 @@ export default function vueDocs(rawOptions?: CustomConfig): Plugin {
         config.entries &&
         config.entries.some((entries) => id.includes(entries))
       ) {
-        code += `import VueHighlightJS from 'vue3-highlightjs';\n`;
-        code += `app.use(VueHighlightJS);\n`;
+        code += `\nimport VueHighlightJS from 'vue3-highlightjs';`;
+        code += `\napp.use(VueHighlightJS);\n`;
         return code;
       }
 

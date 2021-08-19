@@ -7,7 +7,7 @@
           :class="{ active: item.path === $route.path }"
           :to="item.path"
         >
-          {{ item.name }}
+          {{ item.meta ? item.meta.label || item.name : item.name }}
         </router-link>
       </div>
     </div>

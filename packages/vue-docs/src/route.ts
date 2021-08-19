@@ -74,7 +74,7 @@ class DocsRoute {
   getRouteNameByFile(file: string): string | null {
     const routePath = this.getRoutePathByFile(file);
     if (routePath) {
-      return toPascalCase(routePath.replace(/\//g, "_"));
+      return toPascalCase(routePath.replace(/^\//g, "").replace(/\//g, "_"));
     }
 
     return null;
@@ -94,11 +94,41 @@ class DocsRoute {
     };
   }
 
+  /**
+   * 生成组件名
+   */
+  resolveRouteName(componentPath: string): string {
+    const compPath = componentPath
+      .replace(this.config.root, "")
+      .replace(/.(vue|jsx|tsx)$/, "")
+      .replace(/^[\/\/]/, "")
+      .split("/")
+      .map((n) => n.replace(/^\w/, (a) => a.toUpperCase()));
+    // 如果：
+    //    文件名为 index.{vue,tsx,jsx} 或 main.{vue,tsx,jsx}
+    // 或者：
+    //    组件名和文件夹同名
+    // 则直接取上级文件夹名作为组件名
+    let len = compPath.length;
+    const isDefNames = ["Index", "Main"].includes(compPath[len - 1]);
+    const isSameNameOfDir = compPath[len - 1] === compPath[len - 2];
+
+    if (isDefNames || isSameNameOfDir) {
+      compPath.pop();
+      len = compPath.length;
+    }
+
+    return compPath
+      .map((n) => n.replace(/^\w/, (a) => a.toUpperCase()))
+      .join("");
+  }
+
   add(file: string): { [key: string]: Route } {
     const routePath = this.getRoutePathByFile(file);
     if (!routePath) return this.route;
 
     const routeName = this.getRouteNameByFile(file) || "";
+    const routeLabel = this.resolveRouteName(file) || "";
     const demoFile = file.replace(".vue", ".demo.vue");
 
     const result = vueToJsonData(fs.readFileSync(file, "utf-8"));
@@ -109,7 +139,9 @@ class DocsRoute {
       file,
       component: "",
       data: result?.content,
-      meta: {},
+      meta: {
+        label: routeLabel,
+      },
     };
 
     if (fs.existsSync(demoFile)) {
@@ -160,7 +192,7 @@ class DocsRoute {
     return arr;
   }
 
-  xxtoClientCode(): string {
+  toClientCode(): string {
     const docs = [
       `{path: "changelog",name: "ChangeLog",component: () => import('${this.config.templateDir}/ChangeLog.vue')}`,
       `{path: "",name: "HelloWorld",component: () => import('${this.config.templateDir}/HelloWorld.vue')}`,
@@ -221,7 +253,7 @@ class DocsRoute {
     return code;
   }
 
-  toClientCode(): string {
+  xxtoClientCode(): string {
     const arr = [];
     const demoImports = [];
     const demoComponent = [];
@@ -316,6 +348,9 @@ class DocsRoute {
         return {
           name: item.name,
           path: config.base + item.path,
+          meta: {
+            label: item.meta.label,
+          },
         };
       }),
     });
