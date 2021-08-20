@@ -117,8 +117,50 @@ export default function vueDocs(rawOptions?: CustomConfig): Plugin {
         config.entries &&
         config.entries.some((entries) => id.includes(entries))
       ) {
-        code += `\nimport VueHighlightJS from 'vue3-highlightjs';`;
-        code += `\napp.use(VueHighlightJS);\n`;
+        code += `
+          // import VueHighlightJS from 'vue3-highlightjs';
+          // app.use(VueHighlightJS);
+
+          import {default as hljs} from "highlight.js/lib/core";
+          import javascript from "highlight.js/lib/languages/javascript.js";
+          import xml from "highlight.js/lib/languages/xml.js";
+          import css from "highlight.js/lib/languages/css.js";
+          import json from "highlight.js/lib/languages/json.js";
+          import markdown from "highlight.js/lib/languages/markdown.js";
+          import typescript from "highlight.js/lib/languages/typescript.js";
+          import less from "highlight.js/lib/languages/less.js";
+          import scss from "highlight.js/lib/languages/scss.js";
+          import puppet from "highlight.js/lib/languages/puppet.js";
+          import shell from "highlight.js/lib/languages/shell.js";
+          import bash from "highlight.js/lib/languages/bash.js";
+          import vbscriptHtml from "highlight.js/lib/languages/vbscript-html.js";
+
+          hljs.registerLanguage("javascript", javascript);
+          hljs.registerLanguage("xml", xml);
+          hljs.registerLanguage("css", css);
+          hljs.registerLanguage('json', json);
+          hljs.registerLanguage("markdown", markdown);
+          hljs.registerLanguage("typescript", typescript);
+          hljs.registerLanguage("less", less);
+          hljs.registerLanguage("scss", scss);
+          hljs.registerLanguage("puppet", puppet);
+          hljs.registerLanguage("shell", shell);
+          hljs.registerLanguage("bash", bash);
+          hljs.registerLanguage("vbscript-html", vbscriptHtml);
+          app.directive("highlightjs", (el, binding) => {
+            const codeNodes = el.querySelectorAll("code");
+
+            for (let i = 0; i < codeNodes.length; i++) {
+              const codeNode = codeNodes[i];
+
+              if (typeof binding.value === "string") {
+                codeNode.textContent = binding.value;
+              }
+
+              hljs.highlightBlock(codeNode);
+            }
+          });
+        `;
         return code;
       }
 

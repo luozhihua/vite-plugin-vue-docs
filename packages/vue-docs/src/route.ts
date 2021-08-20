@@ -1,9 +1,10 @@
 import { Config, vueToJsonData } from "./index";
 import { debug, getBaseUrl, toLine, toPascalCase } from "./utils";
 import { RenderData } from "./type";
-import { ViteDevServer } from "vite";
+import { normalizePath } from "vite";
 import * as fs from "fs";
 import Cache from "./cache";
+import type { ViteDevServer } from "vite";
 
 // 子组件
 export interface Route {
@@ -101,7 +102,7 @@ class DocsRoute {
     const compPath = componentPath
       .replace(this.config.root, "")
       .replace(/.(vue|jsx|tsx)$/, "")
-      .replace(/^[\/\/]/, "")
+      .replace(/^[\/\\]/, "/")
       .split("/")
       .map((n) => n.replace(/^\w/, (a) => a.toUpperCase()));
     // 如果：
@@ -123,7 +124,8 @@ class DocsRoute {
       .join("");
   }
 
-  add(file: string): { [key: string]: Route } {
+  add(_file: string): { [key: string]: Route } {
+    const file = normalizePath(_file);
     const routePath = this.getRoutePathByFile(file);
     if (!routePath) return this.route;
 
