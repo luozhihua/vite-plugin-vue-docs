@@ -22,6 +22,28 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  optimizeDeps: {
+    // exclude: ["@pkg/components", "ant-design-vue"],
+    include: [
+      "highlight.js",
+      "highlight.js/lib/core",
+      "highlight.js/lib/languages/javascript.js",
+      "highlight.js/lib/languages/xml.js",
+      "highlight.js/lib/languages/css.js",
+      "highlight.js/lib/languages/json.js",
+      "highlight.js/lib/languages/markdown.js",
+      "highlight.js/lib/languages/typescript.js",
+      "highlight.js/lib/languages/less.js",
+      "highlight.js/lib/languages/scss.js",
+      "highlight.js/lib/languages/puppet.js",
+      "highlight.js/lib/languages/shell.js",
+      "highlight.js/lib/languages/bash.js",
+      "highlight.js/lib/languages/vbscript-html.js",
+    ],
+    esbuildOptions: {
+      keepNames: true, // https://cn.vitejs.dev/config/#optimizedeps-keepnames
+    },
+  },
   build: {
     rollupOptions: {
       output: {
