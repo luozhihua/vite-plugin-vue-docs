@@ -13,7 +13,7 @@ export default defineConfig({
   plugins: [
     vue(),
     vueDocs({
-      excludes: ["**/VueSetup.vue", "**/_*.vue"],
+      excludes: ["**/VueSetup.vue", "**/_*.vue", "**/App.vue"],
     }),
   ],
   resolve: {
