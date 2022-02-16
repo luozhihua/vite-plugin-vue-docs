@@ -12,12 +12,13 @@
   "scripts": {
     "dev": "yarn tsup --watch & yarn watch:template",
     "build": "rm -rf dist && yarn tsup && yarn test && yarn cp:template && yarn create:vue",
+    "build2": "yarn tsup && yarn test && yarn cp:template && yarn create:vue",
     "create:vue": "node scripts/md.js",
     "tsup": "tsup src/index.ts --dts",
     "watch:template": "nodemon --watch ./src/template -e vue,css --exec 'yarn cp:template && yarn create:vue'",
     "cp:template": "copyfiles -f src/template/* dist/template",
     "test:dev": "jest --watch",
-    "test": "jest --coverage",
+    "test": "jest --coverage --passWithNoTests",
     "prepublishOnly": "npm run build"
   },
   "repository": {
@@ -50,7 +51,6 @@
     "copyfiles": "^2.4.1",
     "debug": "^4.3.2",
     "fs-extra": "^10.0.0",
-    "highlight.js": "^10.3.2",
     "jest": "^27.0.6",
     "markdown-it": "^12.1.0",
     "nodemon": "^2.0.9",

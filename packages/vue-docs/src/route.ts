@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Config, vueToJsonData } from "./index";
 import { debug, getBaseUrl, toLine, toPascalCase } from "./utils";
 import { RenderData } from "./type";
@@ -194,7 +195,7 @@ class DocsRoute {
     return arr;
   }
 
-  xxtoClientCode(): string {
+  xxxtoClientCode(): string {
     const docs = [
       `{path: "changelog",name: "ChangeLog",component: () => import('${this.config.templateDir}/ChangeLog.vue')}`,
       `{path: "",name: "HelloWorld",component: () => import('${this.config.templateDir}/HelloWorld.vue')}`,
@@ -240,7 +241,7 @@ class DocsRoute {
         const demoMeta = to.meta.demo;
         if (demoMeta) {
           // emitter.emit('beforeDemoLoad', to.meta.demo);
-          const demoComp = await import(/* @vite-ignore */demoMeta.file);
+          const demoComp = await import(/* @vite-ignore */"/@fs/"+demoMeta.file);
           const demo = demoComp.default || demoComp;
           // emitter.emit('afterDemoLoad', demo);
           Vue.component(demoMeta.name, demo);
